@@ -1,23 +1,30 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import AppConfig from 'configs/app.config';
-import { DataSourceOptions } from 'typeorm';
+import { GroupsModule } from './modules/groups/group.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { CommentsModule } from './modules/comments/comment.module';
+import { ProvidersModule } from './modules/providers/provider.module';
+import { TicketsModule } from './modules/tickets/ticket.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `env.${process.env.NODE_ENV}`,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       load: [AppConfig]
     }),
-    TypeOrmModule.forRootAsync({
+    MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        return configService.get<DataSourceOptions>('database');
+        return configService.get('database');
       },
       inject: [ConfigService]
-    })
+    }),
+    GroupsModule,
+    CommentsModule,
+    ProvidersModule,
+    TicketsModule
   ],
   controllers: [],
   providers: [],
