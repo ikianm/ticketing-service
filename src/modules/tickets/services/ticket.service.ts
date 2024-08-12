@@ -61,7 +61,7 @@ export class TicketsService {
         const ticket = await this.ticketsRepository.findById(id);
         if (!ticket) throw new NotFoundException('تیکت با آیدی ارسال شده یافت نشد');
 
-        return ticket; 
+        return ticket;
     }
 
     async create(createTicketDto: CreateTicketDto & { attachment?: string }): Promise<ResponseMessageDto<Ticket>> {
@@ -85,7 +85,7 @@ export class TicketsService {
             serial: generate({ length: 8, charset: 'numeric' }),
             title,
             workspaceId,
-            userId: 'testda'
+            userId: 'test' // req.user.sub
         };
 
         const ticket = await this.ticketsRepository.create(ticketObj);
@@ -151,7 +151,7 @@ export class TicketsService {
         if (!ticket.attachment) throw new BadRequestException('تیکت فایلی ندارد');
 
         const pathOfFile = join(process.cwd(), ticket.attachment);
-        
+
         return readFileSync(pathOfFile);
     }
 

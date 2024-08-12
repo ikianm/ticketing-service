@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
-import { Ticket } from "../tickets/ticket.schema";
 import { ObjectId } from "mongodb";
 
 
@@ -11,7 +10,7 @@ export class Comment {
     userId: string;
 
     @Prop({ type: mongoose.Types.ObjectId, ref: 'Ticket' })
-    ticket: ObjectId;
+    ticketId: ObjectId;
 
     @Prop({ type: String, required: true })
     content: string;

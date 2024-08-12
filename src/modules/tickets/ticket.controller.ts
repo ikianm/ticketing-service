@@ -3,7 +3,7 @@ import { TicketsService } from "./services/ticket.service";
 import { PaginateQueryDto } from "../shares/paginateQuery.dto";
 import { GroupNameQueryDto } from "./dtos/groupnameQuery.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { fileFilter, storage } from "./utils/file-upload";
+import { fileFilter, storage } from "../shares/file-upload";
 import { Request, Response } from "express";
 import { CreateTicketDto } from "./dtos/create-ticket.dto";
 import { ObjectId } from "mongodb";
