@@ -34,10 +34,6 @@ export class TicketsRepository implements IBaseRepository<Ticket> {
         return tickets;
     }
 
-    async findByName(name: string): Promise<Ticket> {
-        return {} as Promise<Ticket>
-    }
-
     async findAllNewTicketsAsGroup(
         { groupName, skip, limit }: { groupName: string, skip: number, limit: number }
     ): Promise<Ticket[]> {
