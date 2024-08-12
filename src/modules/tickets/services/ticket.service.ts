@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { TicketsRepository } from "../ticket.repository";
 import { PaginateQueryDto } from "../../shares/paginateQuery.dto";
 import { GroupNameQueryDto } from "../dtos/groupnameQuery.dto";
@@ -14,6 +14,8 @@ import { ResponseMessageDto } from "src/modules/shares/response-create.dto";
 import { ObjectId } from "mongodb";
 import { SerialQuery } from "../dtos/serialQuery.dto";
 import { join } from "path";
+import AppConfig from "configs/app.config";
+import { InvalidWorkspaceEnum } from "../enums/invalid-workspace.enum";
 
 
 @Injectable()
@@ -67,12 +69,26 @@ export class TicketsService {
     async create(createTicketDto: CreateTicketDto & { attachment?: string }): Promise<ResponseMessageDto<Ticket>> {
         const { issue, priority, title, attachment, groupId, providerId, workspaceId } = createTicketDto;
 
-        const isInputValid = await this.ticketsValidationService.validateTicket({
-            groupId, providerId, workspaceId
-        });
-        if (!isInputValid) {
+        const isGroupValid = await this.ticketsValidationService.validateGroup(groupId);
+        if (!isGroupValid) {
             if (attachment) await this.deleteFile(attachment);
-            throw new BadRequestException('شناسه گروه یا پرووایدر معتبر نیست');
+            throw new BadRequestException('شناسه گروه معتبر نیست');
+        }
+
+        const isProviderIdValid = await this.ticketsValidationService.validateProvider(providerId);
+        if (!isProviderIdValid) {
+            if (attachment) await this.deleteFile(attachment);
+            throw new BadRequestException('شناسه پرووایدر معتبر نیست');
+        }
+
+        if (workspaceId) {
+            const { isWorkspaceValid, error } = await this.ticketsValidationService.checkWorkspaceAccess(workspaceId);
+            if (!isWorkspaceValid) {
+                if (attachment) await this.deleteFile(attachment);
+
+                if (error === InvalidWorkspaceEnum.INTERNAL_SERVER_ERROR) throw new InternalServerErrorException(AppConfig().internalServerErrorMessage);
+                else throw new BadRequestException('عدم دسترسی به میزکار');
+            }
         }
 
         const ticketObj: Ticket = {

@@ -10,6 +10,6 @@ async function bootstrap() {
     transform: true
   }));
   app.useGlobalFilters(new HttpExceptionFilter())
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.PORT); // TODO: read from AppConfig()
 }
 bootstrap();

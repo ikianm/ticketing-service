@@ -3,15 +3,20 @@ import { RequestContext } from "nestjs-request-context";
 export class RequestContextService {
 
     static getContext(): RequestContext {
-        const ctx: RequestContext = RequestContext.currentContext?.req;
+        const ctx = RequestContext.currentContext?.req;
         return ctx;
+    }
+
+    static getHeaders() {
+        const ctx = RequestContext.currentContext?.req;
+        return ctx?.headers;
     }
 
     static getUserInfo(): {
         id: string,
         phoneNumber: string,
         name: string,
-        roles: []
+        isAdmin: boolean
     } {
         const ctx: any = RequestContext.currentContext?.req;
         return ctx?.user;
