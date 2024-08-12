@@ -3,6 +3,7 @@ import { IBaseRepository } from "../shares/base-repository.interface";
 import { Group } from "./group.schema";
 import { Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
+import { ObjectId } from "mongodb";
 
 @Injectable()
 export class GroupsRepository implements IBaseRepository<Group> {
@@ -23,6 +24,10 @@ export class GroupsRepository implements IBaseRepository<Group> {
 
     async findByName(name: string): Promise<Group> {
         return await this.groupModel.findOne({ name });
+    }
+
+    async findById(id: ObjectId): Promise<Group> {
+        return await this.groupModel.findById(id);
     }
 
 

@@ -1,6 +1,6 @@
 
 
-export class ResponseCreateDto<T> {
+export class ResponseMessageDto<T> {
     message: string;
     
     data: T;

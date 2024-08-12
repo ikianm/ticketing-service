@@ -1,10 +1,8 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Provider } from "./provider.schema";
-import { Model } from "mongoose";
-import { CreateProviderDto } from "./dtos/create-provider.dto";
-import { ResponseCreateDto } from "../shares/response-create.dto";
-import { ProvidersRepository } from "./provider.repository";
+import { Provider } from "../provider.schema";
+import { CreateProviderDto } from "../dtos/create-provider.dto";
+import { ResponseMessageDto } from "src/modules/shares/response-create.dto";
+import { ProvidersRepository } from "../provider.repository";
 
 
 @Injectable()
@@ -12,7 +10,7 @@ export class ProvidersService {
 
     constructor(private readonly providersRepository: ProvidersRepository) { }
 
-    async create(createProviderDto: CreateProviderDto): Promise<ResponseCreateDto<Provider>> {
+    async create(createProviderDto: CreateProviderDto): Promise<ResponseMessageDto<Provider>> {
         const { name } = createProviderDto;
         const duplicateProvider = await this.providersRepository.findByName(name);
         if (duplicateProvider) throw new BadRequestException('پرووایدر با این نام وجود دارد');

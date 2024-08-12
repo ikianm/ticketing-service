@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { GroupsService } from "./group.service";
+import { GroupsService } from "./services/group.service";
 import { CreateGroupDto } from "./dtos/create-group.dto";
 
 
@@ -8,7 +8,7 @@ export class GroupsController {
 
     constructor(
         private readonly groupsService: GroupsService
-    ){}
+    ) { }
 
     //protect this route, only admins
     @Post()

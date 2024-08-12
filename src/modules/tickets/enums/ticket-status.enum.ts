@@ -1,4 +1,4 @@
-export enum TicketStatus {
+export enum TicketStatusEnum {
     NEW,
     OPEN, 
     CLOSED

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { CreateProviderDto } from "./dtos/create-provider.dto";
-import { ProvidersService } from "./provider.service";
+import { ProvidersService } from "./services/provider.service";
 
 @Controller('/providers')
 export class ProvidersController {

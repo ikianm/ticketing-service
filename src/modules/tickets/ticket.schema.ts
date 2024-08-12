@@ -1,13 +1,14 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
-import { Group } from "src/modules/groups/group.schema";
-import { TicketPriority } from "./enums/ticket-priority.enum";
-import { TicketStatus } from "./enums/ticket-status.enum";
-import { Provider } from "src/modules/providers/provider.schema";
+import { TicketPriorityEnum } from "./enums/ticket-priority.enum";
+import { TicketStatusEnum } from "./enums/ticket-status.enum";
+import { ObjectId } from "mongodb";
 
 
 @Schema({ timestamps: true })
 export class Ticket {
+
+    _id?: ObjectId;
 
     @Prop({ type: String, required: true })
     userId: string;
@@ -16,7 +17,7 @@ export class Ticket {
     serial: string;
 
     @Prop({ type: mongoose.Types.ObjectId, ref: 'Group' })
-    group: Group;
+    group: ObjectId;
 
     @Prop({ type: String, required: true })
     title: string;
@@ -24,14 +25,14 @@ export class Ticket {
     @Prop({ type: String, required: true })
     issue: string;
 
-    @Prop({ type: String, enum: TicketPriority, default: TicketPriority.LOW })
-    priority: TicketPriority;
+    @Prop({ type: Number, enum: TicketPriorityEnum, default: TicketPriorityEnum.LOW })
+    priority: TicketPriorityEnum;
 
-    @Prop({ type: String, enum: TicketStatus, default: TicketStatus.NEW })
-    status: TicketStatus;
+    @Prop({ type: Number, enum: TicketStatusEnum, default: TicketStatusEnum.NEW })
+    status: TicketStatusEnum;
 
     @Prop({ type: mongoose.Types.ObjectId, ref: 'Provider' })
-    provider: Provider;
+    provider: ObjectId;
 
     @Prop(String)
     attachment: string;

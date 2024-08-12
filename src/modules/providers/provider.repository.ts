@@ -3,6 +3,7 @@ import { IBaseRepository } from "../shares/base-repository.interface";
 import { Provider } from "./provider.schema";
 import { Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
+import { ObjectId } from "mongodb";
 
 @Injectable()
 export class ProvidersRepository implements IBaseRepository<Provider> {
@@ -23,5 +24,9 @@ export class ProvidersRepository implements IBaseRepository<Provider> {
 
     async findByName(name: string): Promise<Provider> {
         return await this.providerModel.findOne({ name });
+    }
+
+    async findById(id: ObjectId): Promise<Provider> {
+        return await this.providerModel.findById(id);
     }
 }

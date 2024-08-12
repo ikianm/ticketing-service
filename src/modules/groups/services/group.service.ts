@@ -1,19 +1,17 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Group } from "./group.schema";
-import { GroupsRepository } from "./group.repository";
-import { CreateGroupDto } from "./dtos/create-group.dto";
-import { ResponseCreateDto } from "../shares/response-create.dto";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { Group } from "../group.schema";
+import { GroupsRepository } from "../group.repository";
+import { CreateGroupDto } from "../dtos/create-group.dto";
+import { ResponseMessageDto } from "src/modules/shares/response-create.dto";
 
 @Injectable()
 export class GroupsService {
 
     constructor(private readonly groupRepository: GroupsRepository) { }
 
-    async create(createGroupDto: CreateGroupDto): Promise<ResponseCreateDto<Group>> {
+    async create(createGroupDto: CreateGroupDto): Promise<ResponseMessageDto<Group>> {
         const { name } = createGroupDto;
         const duplicateName = await this.groupRepository.findByName(name);
-        console.log(duplicateName);
         if (duplicateName) throw new BadRequestException('گروه با این نام وجود دارد');
 
         const group = await this.groupRepository.create({ name });

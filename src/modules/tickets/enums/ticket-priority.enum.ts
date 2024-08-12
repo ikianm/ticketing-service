@@ -1,4 +1,4 @@
-export enum TicketPriority {
+export enum TicketPriorityEnum {
     LOW,
     INTERMEDIATE,
     HIGH
