@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { TicketsRepository } from "../ticket.repository";
 import { PaginateQueryDto } from "../../shares/paginateQuery.dto";
 import { GroupNameQueryDto } from "../dtos/groupnameQuery.dto";
@@ -16,6 +16,7 @@ import { SerialQuery } from "../dtos/serialQuery.dto";
 import { join } from "path";
 import AppConfig from "configs/app.config";
 import { InvalidWorkspaceEnum } from "../enums/invalid-workspace.enum";
+import { RequestContextService } from "src/modules/shares/appRequestContext";
 
 
 @Injectable()
@@ -91,6 +92,8 @@ export class TicketsService {
             }
         }
 
+        const user = RequestContextService.getUserInfo();
+
         const ticketObj: Ticket = {
             attachment: attachment ? attachment : '',
             group: groupId,
@@ -101,7 +104,7 @@ export class TicketsService {
             serial: generate({ length: 8, charset: 'numeric' }),
             title,
             workspaceId,
-            userId: 'test' // req.user.sub
+            userId: user.id
         };
 
         const ticket = await this.ticketsRepository.create(ticketObj);
@@ -135,12 +138,11 @@ export class TicketsService {
         if (!ticket) throw new BadRequestException('تیکتی با آیدی ارسال شده یافت نشد');
         if (ticket.status === TicketStatusEnum.CLOSED) throw new BadRequestException('تیکت قبلا بسته شده');
 
-        // const adminUserAccess =
-        //     req.user.resource_access[process.env.KEYCLOAK_ADMIN_CLIENT];
-        // if (
-        //     req.user.sub !== ticket.userId &&
-        //     (!adminUserAccess || !adminUserAccess.roles.includes('Ticketing'))
-        // )
+        const user = RequestContextService.getUserInfo();
+        if (user.id !== ticket.userId && !user.isAdmin) {
+            throw new ForbiddenException('عدم دسترسیی به تیکت');
+        }
+
         ticket.status = TicketStatusEnum.CLOSED;
         const closedTicket = await this.ticketsRepository.create(ticket);
 
@@ -154,15 +156,14 @@ export class TicketsService {
         const isIdValidObjectId = mongoose.Types.ObjectId.isValid(id);
         if (!isIdValidObjectId) throw new BadRequestException('شناسه معتبر نیست');
 
-        // const adminUserAccess =
-        //     req.user.resource_access[process.env.KEYCLOAK_ADMIN_CLIENT];
-        // if (
-        //     req.user.sub !== ticket.userId &&
-        //     (!adminUserAccess || !adminUserAccess.roles.includes('Ticketing'))
-        // )
 
         const ticket = await this.ticketsRepository.findById(id);
         if (!ticket) throw new BadRequestException('تیکتی با آیدی ارسال شده یافت نشد');
+
+        const user = RequestContextService.getUserInfo();
+        if (user.id !== ticket.userId && !user.isAdmin) {
+            throw new ForbiddenException('عدم دسترسیی به تیکت');
+        }
 
         if (!ticket.attachment) throw new BadRequestException('تیکت فایلی ندارد');
 
