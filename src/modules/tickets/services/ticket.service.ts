@@ -10,7 +10,7 @@ import { TicketsValidationsService } from "./ticketvalidation.service";
 import { unlinkSync, readFileSync } from "fs";
 import { TicketStatusEnum } from "../enums/ticket-status.enum";
 import { generate } from "randomstring";
-import { ResponseMessageDto } from "src/modules/shares/dtos/response-create.dto";
+import { ResponseMessageDto } from "src/modules/shares/dtos/response-message.dto";
 import { ObjectId } from "mongodb";
 import { SerialQuery } from "../dtos/serialQuery.dto";
 import { join } from "path";
