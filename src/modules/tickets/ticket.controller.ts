@@ -36,7 +36,7 @@ export class TicketsController {
 
     @Get('/:id')
     findOne(@Param('id') id: ObjectId) {
-        // return this.ticketsService.findOneById(id);
+        return this.ticketsService.findOneById(id);
     }
 
     @Post()
