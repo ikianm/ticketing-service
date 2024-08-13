@@ -39,7 +39,7 @@ export class CommentsController {
     }
 
     @Put('/seenByAdmin/:id')
-    @UseGuards(new IsAdminGuard())
+    @UseGuards(IsAdminGuard)
     seenByAdmin(@Param('id') id: ObjectId) {
         return this.commentsService.seenByAdmin(id);
     }

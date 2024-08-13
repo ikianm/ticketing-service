@@ -24,13 +24,13 @@ export class TicketsController {
     }
 
     @Get('/find')
-    @UseGuards(new IsAdminGuard())
+    @UseGuards(IsAdminGuard)
     findBySerial(@Query() serialQuery: SerialQuery) {
         return this.ticketsService.findBySerial(serialQuery);
     }
 
     @Get('/newTicketsAsGroup')
-    @UseGuards(new IsAdminGuard())
+    @UseGuards(IsAdminGuard)
     findAllNewTicketsAsGroup(@Query() requestQuery: PaginateQueryDto & GroupNameQueryDto) {
         return this.ticketsService.findAllNewTicketsAsGroup(requestQuery);
     }

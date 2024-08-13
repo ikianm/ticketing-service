@@ -28,7 +28,7 @@ export class GroupsController {
     @ApiUnauthorizedResponse({ description: 'not logged in' })
     @ApiForbiddenResponse({ description: 'not a ticketing admin' })
     @Post()
-    @UseGuards(new IsAdminGuard())
+    @UseGuards(IsAdminGuard)
     create(@Body() createGroupDto: CreateGroupDto) {
         return this.groupsService.create(createGroupDto);
     }

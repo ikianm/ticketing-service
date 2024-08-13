@@ -27,7 +27,7 @@ export class ProvidersController {
     @ApiUnauthorizedResponse({ description: 'not logged in' })
     @ApiForbiddenResponse({ description: 'not a ticketing admin' })
     @Post()
-    @UseGuards(new IsAdminGuard())
+    @UseGuards(IsAdminGuard)
     create(@Body() createProviderDto: CreateProviderDto) {
         return this.providersService.create(createProviderDto);
     }
