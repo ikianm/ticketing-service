@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { GroupsService } from "./services/group.service";
 import { CreateGroupDto } from "./dtos/create-group.dto";
+import { IsAdminGuard } from "../shares/isAdmin.guard";
 
 
 @Controller('/groups')
@@ -10,8 +11,9 @@ export class GroupsController {
         private readonly groupsService: GroupsService
     ) { }
 
-    //protect this route, only admins
+
     @Post()
+    @UseGuards(new IsAdminGuard())
     create(@Body() createGroupDto: CreateGroupDto) {
         return this.groupsService.create(createGroupDto);
     }
