@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { CommentsRepository } from "./comment.repository";
 import { CreateCommentDto } from "./dtos/create-comment.dto";
 import { readFileSync, unlinkSync } from "fs";
@@ -8,6 +8,7 @@ import { TicketStatusEnum } from "src/modules/tickets/enums/ticket-status.enum";
 import { Comment } from "./comment.schema";
 import { ObjectId } from "mongodb";
 import { join } from "path";
+import { RequestContextService } from "../shares/appRequestContext";
 
 
 @Injectable()
@@ -20,10 +21,6 @@ export class CommentsService {
 
     async create(createCommentDto: CreateCommentDto & { attachment?: string }): Promise<Comment> {
         const { content, attachment, ticketId } = createCommentDto;
-
-        // const adminUserAccess =
-        //     req.user.resource_access[process.env.KEYCLOAK_ADMIN_CLIENT];
-
 
         const isValidObjectId = mongoose.Types.ObjectId.isValid(ticketId);
         if (!isValidObjectId) {
@@ -42,19 +39,15 @@ export class CommentsService {
             throw new BadRequestException('تیکت بسته شده است');
         }
 
+        const user = RequestContextService.getUserInfo();
+
         const commentObj: Comment = {
             attachment: attachment || '',
             content,
-            userId: 'test', //req.user,sub
-            isAdminComment: false, //adminUserAccess
-            //? adminUserAccess.roles.includes('Ticketing')
-            // : false,
-            seenByAdmin: false, //adminUserAccess
-            //? adminUserAccess.roles.includes('Ticketing')
-            //: false,
-            seenByUser: false, //adminUserAccess
-            //? !adminUserAccess.roles.includes('Ticketing')
-            //: true,
+            userId: user.id,
+            isAdminComment: user.isAdmin,
+            seenByAdmin: user.isAdmin,
+            seenByUser: !user.isAdmin,
             ticketId
         };
 
@@ -94,6 +87,11 @@ export class CommentsService {
 
         const ticket = await this.commentsRepository.findById(id);
         if (!ticket) throw new BadRequestException('کامنتی با آیدی ارسال شده یافت نشد');
+
+        const user = RequestContextService.getUserInfo();
+        if (user.id !== ticket.userId && !user.isAdmin) {
+            throw new ForbiddenException('عدم دسترسی به کامنت');
+        }
 
         if (!ticket.attachment) throw new BadRequestException('تیکت فایلی ندارد');
 
