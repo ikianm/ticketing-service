@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { Group } from "../group.schema";
 import { GroupsRepository } from "../group.repository";
 import { CreateGroupDto } from "../dtos/create-group.dto";
-import { ResponseMessageDto } from "src/modules/shares/response-create.dto";
+import { ResponseMessageDto } from "src/modules/shares/dtos/response-create.dto";
 
 @Injectable()
 export class GroupsService {

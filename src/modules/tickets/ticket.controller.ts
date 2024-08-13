@@ -1,6 +1,6 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put, Query, Req, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { TicketsService } from "./services/ticket.service";
-import { PaginateQueryDto } from "../shares/paginateQuery.dto";
+import { PaginateQueryDto } from "../shares/dtos/paginateQuery.dto";
 import { GroupNameQueryDto } from "./dtos/groupnameQuery.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { fileFilter, storage } from "../shares/file-upload";
@@ -9,6 +9,7 @@ import { CreateTicketDto } from "./dtos/create-ticket.dto";
 import { ObjectId } from "mongodb";
 import { SerialQuery } from "./dtos/serialQuery.dto";
 import { HttpStatusCode } from "axios";
+import { IsAdminGuard } from "../shares/isAdmin.guard";
 
 @Controller('/tickets')
 export class TicketsController {
@@ -22,14 +23,14 @@ export class TicketsController {
         return this.ticketsService.findAll(requestQuery);
     }
 
-    // add admin protection
     @Get('/find')
+    @UseGuards(new IsAdminGuard())
     findBySerial(@Query() serialQuery: SerialQuery) {
         return this.ticketsService.findBySerial(serialQuery);
     }
 
-    // add admin protection
     @Get('/newTicketsAsGroup')
+    @UseGuards(new IsAdminGuard())
     findAllNewTicketsAsGroup(@Query() requestQuery: PaginateQueryDto & GroupNameQueryDto) {
         return this.ticketsService.findAllNewTicketsAsGroup(requestQuery);
     }
@@ -76,6 +77,5 @@ export class TicketsController {
             .status(HttpStatusCode.Ok)
             .send(fileBuffer);
     }
-
 
 }

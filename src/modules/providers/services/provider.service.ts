@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { Provider } from "../provider.schema";
 import { CreateProviderDto } from "../dtos/create-provider.dto";
-import { ResponseMessageDto } from "src/modules/shares/response-create.dto";
+import { ResponseMessageDto } from "src/modules/shares/dtos/response-create.dto";
 import { ProvidersRepository } from "../provider.repository";
 
 

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put, Req, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CommentsService } from "./comment.service";
 import { CreateCommentDto } from "./dtos/create-comment.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -6,6 +6,7 @@ import { fileFilter, storage } from "../shares/file-upload";
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { HttpStatusCode } from "axios";
+import { IsAdminGuard } from "../shares/isAdmin.guard";
 
 
 @Controller('/comments')
@@ -37,8 +38,8 @@ export class CommentsController {
         return this.commentsService.seenByUser(id);
     }
 
-    //admin protection
     @Put('/seenByAdmin/:id')
+    @UseGuards(new IsAdminGuard())
     seenByAdmin(@Param('id') id: ObjectId) {
         return this.commentsService.seenByAdmin(id);
     }
