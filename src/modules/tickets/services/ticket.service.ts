@@ -119,7 +119,7 @@ export class TicketsService {
     }
 
     async deleteFile(path: string): Promise<void> {
-        unlinkSync(path);
+        if (path) unlinkSync(path);
     }
 
     async findBySerial(serialQuery: SerialQuery): Promise<Ticket> {

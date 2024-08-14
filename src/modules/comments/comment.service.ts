@@ -32,7 +32,7 @@ export class CommentsService {
         const ticket = await this.ticketsApiService.findById(ticketId);
         if (!ticket) {
             await this.deleteFile(attachment);
-            throw new NotFoundException('کامنت یافت نشد');
+            throw new NotFoundException('تیکت یافت نشد');
         }
 
         if (ticket.status === TicketStatusEnum.CLOSED) {
@@ -107,7 +107,7 @@ export class CommentsService {
     }
 
     async deleteFile(path: string): Promise<void> {
-        unlinkSync(path);
+        if (path) unlinkSync(path);
     }
 
 }
