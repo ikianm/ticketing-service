@@ -92,7 +92,7 @@ export class CommentsService {
         if (!isValidObjectId) throw new BadRequestException('شناسه نامعتبر است');
 
         const ticket = await this.commentsRepository.findById(id);
-        if (!ticket) throw new BadRequestException('کامنتی با آیدی ارسال شده یافت نشد');
+        if (!ticket) throw new NotFoundException('کامنتی با آیدی ارسال شده یافت نشد');
 
         const user = RequestContextService.getUserInfo();
         if (user.id !== ticket.userId && !user.isAdmin) {
