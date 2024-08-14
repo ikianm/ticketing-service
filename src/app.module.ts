@@ -8,6 +8,7 @@ import { ProvidersModule } from './modules/providers/provider.module';
 import { TicketsModule } from './modules/tickets/ticket.module';
 import { ProtectionMiddleware } from './modules/shares/protection.middleware';
 import { RequestContextModule } from 'nestjs-request-context';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -23,6 +24,24 @@ import { RequestContextModule } from 'nestjs-request-context';
       },
       inject: [ConfigService]
     }),
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const environment = configService.get<string>('environment');
+        const level = environment === 'production' ? 'error' : 'debug';
+        const target = environment === 'production' ? '' : 'pino-pretty';
+
+        return {
+          pinoHttp: {
+            level,
+            transport: {
+              target
+            }
+          }
+        }
+      },
+      inject: [ConfigService]
+    }),
     GroupsModule,
     CommentsModule,
     ProvidersModule,
@@ -32,7 +51,7 @@ import { RequestContextModule } from 'nestjs-request-context';
   controllers: [],
   providers: [],
 })
-export class AppModule { 
+export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ProtectionMiddleware).forRoutes('*');
   }

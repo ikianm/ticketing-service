@@ -4,9 +4,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './modules/shares/http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import AppConfig from 'configs/app.config';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   const config = new DocumentBuilder()
     .setTitle('Ticketing')
@@ -18,7 +19,7 @@ async function bootstrap() {
         description: `[just text field] Please enter token in following format: Bearer <JWT>`,
         name: 'Authorization',
         scheme: 'Bearer',
-        type: 'http', 
+        type: 'http',
         in: 'Header'
       },
       'access-token',
@@ -26,6 +27,8 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  app.useLogger(app.get(Logger));
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
