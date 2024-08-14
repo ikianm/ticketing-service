@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { CommentsRepository } from "./comment.repository";
 import { CreateCommentDto } from "./dtos/create-comment.dto";
 import { readFileSync, unlinkSync } from "fs";
@@ -9,6 +9,7 @@ import { Comment } from "./comment.schema";
 import { ObjectId } from "mongodb";
 import { join } from "path";
 import { RequestContextService } from "../shares/appRequestContext";
+import { ResponseMessageDto } from "../shares/dtos/response-message.dto";
 
 
 @Injectable()
@@ -19,7 +20,7 @@ export class CommentsService {
         private readonly ticketsApiService: TicketsApiService
     ) { }
 
-    async create(createCommentDto: CreateCommentDto & { attachment?: string }): Promise<Comment> {
+    async create(createCommentDto: CreateCommentDto & { attachment?: string }): Promise<ResponseMessageDto<Comment>> {
         const { content, attachment, ticketId } = createCommentDto;
 
         const isValidObjectId = mongoose.Types.ObjectId.isValid(ticketId);
@@ -51,7 +52,12 @@ export class CommentsService {
             ticketId
         };
 
-        return await this.commentsRepository.create(commentObj);
+        const comment = await this.commentsRepository.create(commentObj);
+
+        return {
+            message: 'کامنت با موفقیت ساخته شد',
+            data: comment
+        }
 
     }
 
@@ -65,7 +71,7 @@ export class CommentsService {
         comment.seenByUser = true;
         await this.commentsRepository.create(comment);
 
-        return { statusCode: 200 };
+        return { statusCode: HttpStatus.OK };
     }
 
     async seenByAdmin(id: ObjectId): Promise<{ statusCode: number }> {
@@ -78,7 +84,7 @@ export class CommentsService {
         comment.seenByAdmin = true;
         await this.commentsRepository.create(comment);
 
-        return { statusCode: 200 };
+        return { statusCode: HttpStatus.OK };
     }
 
     async download(id: ObjectId) {
