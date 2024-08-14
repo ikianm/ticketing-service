@@ -7,13 +7,27 @@ import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { HttpStatusCode } from "axios";
 import { IsAdminGuard } from "../shares/isAdmin.guard";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { CommentResponse } from "./swaggerRespnses/comment-response";
 
 
+@ApiTags('Comments')
+@ApiBearerAuth('access-token')
 @Controller('/comments')
 export class CommentsController {
 
     constructor(private readonly commentsService: CommentsService) { }
 
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({ type: CreateCommentDto })
+    @ApiCreatedResponse({
+        description: 'comment created successfully',
+        type: CommentResponse
+    })
+    @ApiBadRequestResponse({ description: 'id is not valid' })
+    @ApiBadRequestResponse({ description: 'comment is closed' })
+    @ApiNotFoundResponse({ description: 'ticket not found' })
+    @ApiUnauthorizedResponse({ description: 'not logged in' })
     @Post()
     @UseInterceptors(FileInterceptor('attachment', {
         storage,
@@ -33,17 +47,50 @@ export class CommentsController {
         return this.commentsService.create(createCommentDto);
     }
 
+    @ApiParam({
+        name: 'id',
+        type: 'string',
+        example: '66b9c9b8b31f096cc79e1211',
+        required: true
+    })
+    @ApiOkResponse({ description: 'seen by user successfull' })
+    @ApiBadRequestResponse({ description: 'id is not valid' })
+    @ApiNotFoundResponse({ description: 'comment not found' })
+    @ApiUnauthorizedResponse({ description: 'not logged in' })
     @Put('/seenByUser/:id')
     seenByUser(@Param('id') id: ObjectId) {
         return this.commentsService.seenByUser(id);
     }
 
+    @ApiParam({
+        name: 'id',
+        type: 'string',
+        example: '66b9c9b8b31f096cc79e1211',
+        required: true
+    })
+    @ApiOkResponse({ description: 'seen by user successfull' })
+    @ApiBadRequestResponse({ description: 'id is not valid' })
+    @ApiNotFoundResponse({ description: 'comment not found' })
+    @ApiUnauthorizedResponse({ description: 'not logged in' })
+    @ApiForbiddenResponse({ description: 'not a ticketing admin' })
     @Put('/seenByAdmin/:id')
     @UseGuards(IsAdminGuard)
     seenByAdmin(@Param('id') id: ObjectId) {
         return this.commentsService.seenByAdmin(id);
     }
 
+    @ApiParam({
+        name: 'id',
+        type: 'string',
+        example: '66b9c9b8b31f096cc79e1211',
+        required: true
+    })
+    @ApiBadRequestResponse({ description: 'id is not valid' })
+    @ApiNotFoundResponse({ description: 'comment not found' })
+    @ApiUnauthorizedResponse({ description: 'not logged in' })
+    @ApiForbiddenResponse({ description: 'neither creator of the comment nor a ticketing admin' })
+    @ApiBadRequestResponse({ description: 'no attachment available for this comment' })
+    @ApiOkResponse({description: 'attachment downloaded successfully'})
     @Get('/download/:id')
     async download(@Res() res: Response, @Param('id') id: ObjectId) {
         const fileBuffer = await this.commentsService.download(id);

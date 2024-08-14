@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 
-export class ResponseGroupDto {
+export class GroupResponse {
 
     @ApiProperty({ example: 'گروه با موفقیت ساخته شد' })
     message: string;

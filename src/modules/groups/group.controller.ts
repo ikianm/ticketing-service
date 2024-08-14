@@ -2,16 +2,13 @@ import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { GroupsService } from "./services/group.service";
 import { CreateGroupDto } from "./dtos/create-group.dto";
 import { IsAdminGuard } from "../shares/isAdmin.guard";
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiHeader, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { ResponseGroupDto } from "./dtos/response-group.dto";
-import { ResponseFindAllGroups } from "./dtos/response-findAll-group.dto";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { GroupResponse } from "./swaggerResponses/group-response";
+import { FindGroupResponse } from "./swaggerResponses/find-group-response";
 
 
 @ApiTags('Groups')
-@ApiHeader({
-    name: 'Authorization',
-    description: 'access token'
-})
+@ApiBearerAuth('access-token')
 @Controller('/groups')
 export class GroupsController {
 
@@ -22,7 +19,7 @@ export class GroupsController {
 
     @ApiCreatedResponse({
         description: 'group created successfully',
-        type: ResponseGroupDto
+        type: GroupResponse
     })
     @ApiBadRequestResponse({ description: 'duplicate groupname' })
     @ApiUnauthorizedResponse({ description: 'not logged in' })
@@ -36,7 +33,7 @@ export class GroupsController {
     @ApiCreatedResponse({
         description: 'groups were retrieved',
         isArray: true,
-        type: ResponseFindAllGroups
+        type: FindGroupResponse
     })
     @ApiUnauthorizedResponse({ description: 'not logged in' })
     @Get()

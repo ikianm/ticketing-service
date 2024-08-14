@@ -13,6 +13,16 @@ async function bootstrap() {
     .setDescription('The ticketing API description')
     .setVersion('1.0')
     .addTag('ticketing')
+    .addBearerAuth(
+      {
+        description: `[just text field] Please enter token in following format: Bearer <JWT>`,
+        name: 'Authorization',
+        scheme: 'Bearer',
+        type: 'http', 
+        in: 'Header'
+      },
+      'access-token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

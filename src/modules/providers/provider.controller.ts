@@ -2,15 +2,12 @@ import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { CreateProviderDto } from "./dtos/create-provider.dto";
 import { ProvidersService } from "./services/provider.service";
 import { IsAdminGuard } from "../shares/isAdmin.guard";
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiHeader, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiHeader, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { ResponseProvderDto } from "./dtos/response-provider.dto";
 import { ResponseFindAllProviders } from "./dtos/response-findAll-providers.dto";
 
 @ApiTags('Providers')
-@ApiHeader({
-    name: 'Authorization',
-    description: 'access token'
-})
+@ApiBearerAuth('access-token')
 @Controller('/providers')
 export class ProvidersController {
 

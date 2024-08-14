@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 
-export class ResponseFindAllGroups {
+export class FindGroupResponse {
     @ApiProperty({ example: '66b892d965b885a03983e2d0' })
     _id: string;
 
