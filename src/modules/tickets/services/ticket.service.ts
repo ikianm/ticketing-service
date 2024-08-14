@@ -135,7 +135,7 @@ export class TicketsService {
         if (!isIdValidObjectId) throw new BadRequestException('شناسه معتبر نیست');
 
         const ticket = await this.ticketsRepository.findById(id);
-        if (!ticket) throw new BadRequestException('تیکتی با آیدی ارسال شده یافت نشد');
+        if (!ticket) throw new NotFoundException('تیکتی با آیدی ارسال شده یافت نشد');
         if (ticket.status === TicketStatusEnum.CLOSED) throw new BadRequestException('تیکت قبلا بسته شده');
 
         const user = RequestContextService.getUserInfo();
@@ -158,7 +158,7 @@ export class TicketsService {
 
 
         const ticket = await this.ticketsRepository.findById(id);
-        if (!ticket) throw new BadRequestException('تیکتی با آیدی ارسال شده یافت نشد');
+        if (!ticket) throw new NotFoundException('تیکتی با آیدی ارسال شده یافت نشد');
 
         const user = RequestContextService.getUserInfo();
         if (user.id !== ticket.userId && !user.isAdmin) {
