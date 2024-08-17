@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ObjectId } from "mongodb";
 import { GroupsApiService } from "src/modules/groups/services/groupapi.service";
 import mongoose from "mongoose";

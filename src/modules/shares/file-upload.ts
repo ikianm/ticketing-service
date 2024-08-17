@@ -1,7 +1,7 @@
 import { diskStorage } from "multer";
-import { mkdirSync } from 'fs';
+import { mkdirSync } from 'node:fs';
 import { generate } from 'randomstring';
-import { extname } from "path";
+import { extname } from "node:path";
 
 export const storage = diskStorage({
     destination: (req, file, cb) => {

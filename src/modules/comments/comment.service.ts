@@ -1,13 +1,13 @@
 import { BadRequestException, ForbiddenException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { CommentsRepository } from "./comment.repository";
 import { CreateCommentDto } from "./dtos/create-comment.dto";
-import { readFileSync, unlinkSync } from "fs";
+import { readFileSync, unlinkSync } from "node:fs";
 import mongoose from "mongoose";
 import { TicketsApiService } from "src/modules/tickets/services/ticketapi.service";
 import { TicketStatusEnum } from "src/modules/tickets/enums/ticket-status.enum";
 import { Comment } from "./comment.schema";
 import { ObjectId } from "mongodb";
-import { join } from "path";
+import { join } from "node:path";
 import { RequestContextService } from "../shares/appRequestContext";
 import { ResponseMessageDto } from "../shares/dtos/response-message.dto";
 

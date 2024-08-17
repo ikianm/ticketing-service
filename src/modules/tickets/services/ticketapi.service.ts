@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { TicketsRepository } from "../ticket.repository";
 import { ObjectId } from "mongodb";
 import { Ticket } from "../ticket.schema";
