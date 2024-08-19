@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { ObjectId } from "mongodb";
-import { GroupsApiService } from "src/modules/groups/services/groupapi.service";
+import { GroupsApiService } from '../../groups/services/groupapi.service';
 import mongoose from "mongoose";
-import { ProvidersApiService } from "src/modules/providers/services/providerapi.service";
-import AppConfig from "configs/app.config";
+import { ProvidersApiService } from '../../providers/services/providerapi.service';
+import AppConfig from '../../../../configs/app.config';
 import axios from "axios";
-import { RequestContextService } from "src/modules/shares/appRequestContext";
+import { RequestContextService } from '../../shares/appRequestContext';
 import { InvalidWorkspaceEnum } from "../enums/invalid-workspace.enum";
 
 @Injectable()

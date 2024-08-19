@@ -10,13 +10,13 @@ import { TicketsValidationsService } from "./ticketvalidation.service";
 import { unlinkSync, readFileSync } from "fs";
 import { TicketStatusEnum } from "../enums/ticket-status.enum";
 import { generate } from "randomstring";
-import { ResponseMessageDto } from "src/modules/shares/dtos/response-message.dto";
+import { ResponseMessageDto } from '../../shares/dtos/response-message.dto';
 import { ObjectId } from "mongodb";
 import { SerialQuery } from "../dtos/serialQuery.dto";
 import { join } from "node:path";
-import AppConfig from "configs/app.config";
+import AppConfig from '../../../../configs/app.config';
 import { InvalidWorkspaceEnum } from "../enums/invalid-workspace.enum";
-import { RequestContextService } from "src/modules/shares/appRequestContext";
+import { RequestContextService } from '../../shares/appRequestContext';
 
 
 @Injectable()
