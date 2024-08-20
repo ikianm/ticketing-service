@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import AppConfig from 'configs/app.config';
 import { GroupsModule } from './modules/groups/group.module';
@@ -9,6 +9,9 @@ import { TicketsModule } from './modules/tickets/ticket.module';
 import { ProtectionMiddleware } from './modules/shares/protection.middleware';
 import { RequestContextModule } from 'nestjs-request-context';
 import { LoggerModule } from 'nestjs-pino';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { HttpExceptionFilter } from './modules/shares/http-exception.filter';
+import helmet from 'helmet';
 
 @Module({
   imports: [
@@ -30,7 +33,6 @@ import { LoggerModule } from 'nestjs-pino';
         const environment = configService.get<string>('environment');
         const level = environment === 'production' ? 'error' : 'debug';
         const target = environment === 'production' ? '' : 'pino-pretty';
-
         return {
           pinoHttp: {
             level,
@@ -49,10 +51,23 @@ import { LoggerModule } from 'nestjs-pino';
     RequestContextModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+        transform: true
+      })
+    },
+    {
+      provide: APP_FILTER,
+      useValue: new HttpExceptionFilter()
+    }
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ProtectionMiddleware).forRoutes('*');
+    consumer.apply(helmet()).forRoutes('*');
   }
 }
