@@ -14,7 +14,8 @@ const AppConfig = () => ({
         authClientSecret: process.env.KEYCLOAK_AUTH_CLIENT_SECRET,
         authServer: process.env.KEYCLOAK_AUTH_SERVER,
         realm: process.env.KEYCLOAK_REALM
-    }
+    },
+    accessToken: process.env.ACCESS_TOKEN
 });
 
 export default AppConfig;

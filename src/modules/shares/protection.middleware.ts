@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import axios from 'axios';
-import AppConfig from 'configs/app.config';
+import AppConfig from '../../../configs/app.config';
 import { NextFunction, Request, Response } from 'express';
 const jwt = require('jsonwebtoken');
 const qs = require('qs');
@@ -19,7 +19,7 @@ export class ProtectionMiddleware implements NestMiddleware {
             const expires = new Date();
             expires.setMilliseconds(
               expires.getMilliseconds() +
-                checkRefreshToken.data.refresh_expires_in * 1000,
+              checkRefreshToken.data.refresh_expires_in * 1000,
             );
             response.cookie(
               'refreshToken',
@@ -70,7 +70,7 @@ export class ProtectionMiddleware implements NestMiddleware {
           const expires = new Date();
           expires.setMilliseconds(
             expires.getMilliseconds() +
-              checkRefreshToken.data.refresh_expires_in * 1000,
+            checkRefreshToken.data.refresh_expires_in * 1000,
           );
           response.cookie(
             'refreshToken',

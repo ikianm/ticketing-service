@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post, Put, Query, Req, Res, UnsupportedMediaTypeException, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { TicketsService } from "./services/ticket.service";
 import { PaginateQueryDto } from "../shares/dtos/paginateQuery.dto";
 import { GroupNameQueryDto } from "./dtos/groupnameQuery.dto";
@@ -130,7 +130,7 @@ export class TicketsController {
     ) {
         if (!file) req.body.attachment = undefined;
         else req.body.attachment = file.path;
-        if (req.fileError) throw new BadRequestException(req.fileError);
+        if (req.fileError) throw new UnsupportedMediaTypeException(req.fileError);
 
         createTicketDto.attachment = file ? file.path : undefined;
 
@@ -167,7 +167,7 @@ export class TicketsController {
     @ApiUnauthorizedResponse({ description: 'not logged in' })
     @ApiBadRequestResponse({ description: 'id is not valid or ticket has no attachment' })
     @ApiNotFoundResponse({ description: 'no ticket found' })
-    @ApiOkResponse({description: 'attachment downloaded successfully'})
+    @ApiOkResponse({ description: 'attachment downloaded successfully' })
     @Get('/download/:id')
     async download(@Res() res: Response, @Param('id') id: ObjectId) {
         const fileBuffer = await this.ticketsService.download(id);

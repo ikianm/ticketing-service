@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import AppConfig from 'configs/app.config';
+import AppConfig from '../configs/app.config';
 import { GroupsModule } from './modules/groups/group.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommentsModule } from './modules/comments/comment.module';
@@ -12,6 +12,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { HttpExceptionFilter } from './modules/shares/http-exception.filter';
 import helmet from 'helmet';
+import { ValidateTicketBodyMiddleware } from './modules/tickets/validateTicketBody.middleware';
 
 @Module({
   imports: [
@@ -31,8 +32,17 @@ import helmet from 'helmet';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const environment = configService.get<string>('environment');
-        const level = environment === 'production' ? 'error' : 'debug';
-        const target = environment === 'production' ? '' : 'pino-pretty';
+        let level = '';
+        let target = 'pino-pretty';
+        if (environment === 'production') {
+          level = 'error';
+          target = '';
+        } else if (environment === 'testing') {
+          level = 'warn'
+        } else {
+          level = 'warn';
+        }
+
         return {
           pinoHttp: {
             level,
@@ -69,5 +79,6 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ProtectionMiddleware).forRoutes('*');
     consumer.apply(helmet()).forRoutes('*');
+    consumer.apply(ValidateTicketBodyMiddleware).forRoutes('/tickets/create');
   }
 }
