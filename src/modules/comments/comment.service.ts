@@ -3,8 +3,8 @@ import { CommentsRepository } from "./comment.repository";
 import { CreateCommentDto } from "./dtos/create-comment.dto";
 import { readFileSync, unlinkSync } from "node:fs";
 import mongoose from "mongoose";
-import { TicketsApiService } from "src/modules/tickets/services/ticketapi.service";
-import { TicketStatusEnum } from "src/modules/tickets/enums/ticket-status.enum";
+import { TicketsApiService } from "../tickets/services/ticketapi.service";
+import { TicketStatusEnum } from "../tickets/enums/ticket-status.enum";
 import { Comment } from "./comment.schema";
 import { ObjectId } from "mongodb";
 import { join } from "node:path";
@@ -29,7 +29,7 @@ export class CommentsService {
             throw new BadRequestException('شناسه کامنت نامعتبر است');
         }
 
-        const ticket = await this.ticketsApiService.findById(ticketId);
+        const ticket = await this.ticketsApiService.findById(new mongoose.Types.ObjectId(ticketId));
         if (!ticket) {
             await this.deleteFile(attachment);
             throw new NotFoundException('تیکت یافت نشد');
@@ -49,7 +49,7 @@ export class CommentsService {
             isAdminComment: user.isAdmin,
             seenByAdmin: user.isAdmin,
             seenByUser: !user.isAdmin,
-            ticketId
+            ticketId: new mongoose.Types.ObjectId(ticketId)
         };
 
         const comment = await this.commentsRepository.create(commentObj);
