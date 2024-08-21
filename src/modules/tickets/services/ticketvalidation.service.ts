@@ -16,19 +16,22 @@ export class TicketsValidationsService {
         private readonly providersApiService: ProvidersApiService
     ) { }
 
-    async validateGroup(groupId: ObjectId): Promise<boolean> {
+    async validateGroup(groupId: string): Promise<boolean> {
         const isGroupIdValid = mongoose.Types.ObjectId.isValid(groupId);
-        const group = await this.groupsApiService.findById(groupId);
-        if (!group || !isGroupIdValid) return false;
+        if (!isGroupIdValid) return false;
+
+        const group = await this.groupsApiService.findById(new mongoose.Types.ObjectId(groupId));
+        if (!group) return false;
 
         return true;
     }
 
-    async validateProvider(providerId: ObjectId): Promise<boolean> {
+    async validateProvider(providerId: string): Promise<boolean> {
         const isProviderIdValid = mongoose.Types.ObjectId.isValid(providerId);
-        const provider = await this.providersApiService.findById(providerId);
+        if (!isProviderIdValid) return false;
 
-        if (!provider || !isProviderIdValid) return false;
+        const provider = await this.providersApiService.findById(new mongoose.Types.ObjectId(providerId));
+        if (!provider) return false;
 
         return true;
     }

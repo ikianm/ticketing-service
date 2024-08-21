@@ -126,7 +126,7 @@ export class TicketsController {
     create(
         @UploadedFile() file: Express.Multer.File,
         @Req() req: Request,
-        @Body() createTicketDto: CreateTicketDto & { attachment?: string }
+        @Body() createTicketDto: CreateTicketDto
     ) {
         if (!file) req.body.attachment = undefined;
         else req.body.attachment = file.path;

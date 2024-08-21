@@ -67,7 +67,7 @@ export class TicketsService {
         return ticket;
     }
 
-    async create(createTicketDto: CreateTicketDto & { attachment?: string }): Promise<ResponseMessageDto<Ticket>> {
+    async create(createTicketDto: CreateTicketDto): Promise<ResponseMessageDto<Ticket>> {
         const { issue, priority, title, attachment, groupId, providerId, workspaceId } = createTicketDto;
 
         const isGroupValid = await this.ticketsValidationService.validateGroup(groupId);
@@ -96,8 +96,8 @@ export class TicketsService {
 
         const ticketObj: Ticket = {
             attachment: attachment ? attachment : '',
-            group: groupId,
-            provider: providerId,
+            group: new mongoose.Types.ObjectId(groupId),
+            provider: new mongoose.Types.ObjectId(providerId),
             issue,
             priority,
             status: TicketStatusEnum.NEW,
@@ -119,6 +119,7 @@ export class TicketsService {
     }
 
     async deleteFile(path: string): Promise<void> {
+        console.log(path)
         if (path) unlinkSync(path);
     }
 

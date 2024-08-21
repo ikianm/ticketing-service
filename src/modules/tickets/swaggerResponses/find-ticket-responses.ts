@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { TicketPriorityEnum } from "../enums/ticket-priority.enum";
 import { TicketStatusEnum } from "../enums/ticket-status.enum";
-import { Group } from "src/modules/groups/group.schema";
+import { Group } from "../../groups/group.schema";
 import { Provider } from "@nestjs/common";
 
 

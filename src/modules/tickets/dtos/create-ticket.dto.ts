@@ -32,15 +32,15 @@ export class CreateTicketDto {
         example: '66b892d965b885a03983e2d0',
         description: 'id of the related group'
     })
-    @IsMongoId()
-    groupId: ObjectId;
+    @IsString()
+    groupId: string;
 
     @ApiProperty({
         example: '66b892d965b885a03983e2d0',
         description: 'id of the related provider'
     })
-    @IsMongoId()
-    providerId: ObjectId;
+    @IsString()
+    providerId: string;
 
     @ApiPropertyOptional(
         {
