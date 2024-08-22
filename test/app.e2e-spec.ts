@@ -209,7 +209,7 @@ describe('end-2-end testing', () => {
                     .field('issue', 'this is a short description of the issue')
                     .field('priority', 1)
                     .field('groupId', groupId)
-                    .field('providerId', invalidProviderId)
+                    .field('providerId', providerId)
                     .attach('attachment', path.resolve(__dirname, 'file3.js'))
                     .expect(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             });
