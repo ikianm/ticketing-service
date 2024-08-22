@@ -13,6 +13,7 @@ import { IsAdminGuard } from "../shares/isAdmin.guard";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { FindTicketResponses } from "./swaggerResponses/find-ticket-responses";
 import { TicketResponse } from "./swaggerResponses/ticket-response";
+import { TicketBodyValidationInterceptor } from "./ticketBodyValidation.interceptor";
 
 @ApiTags('Tickets')
 @ApiBearerAuth('access-token')
@@ -117,12 +118,12 @@ export class TicketsController {
     @ApiBadRequestResponse({ description: 'providerId is not valid' })
     @ApiBadRequestResponse({ description: 'no access to the workspace' })
     @ApiUnauthorizedResponse({ description: 'not logged in' })
-    @Post()
     @UseInterceptors(FileInterceptor('attachment', {
         storage,
         limits: { fileSize: 1024 * 1024 * 1 },
         fileFilter
-    }))
+    }), TicketBodyValidationInterceptor)
+    @Post()
     create(
         @UploadedFile() file: Express.Multer.File,
         @Req() req: Request,
@@ -133,7 +134,6 @@ export class TicketsController {
         if (req.fileError) throw new UnsupportedMediaTypeException(req.fileError);
 
         createTicketDto.attachment = file ? file.path : undefined;
-
         return this.ticketsService.create(createTicketDto);
     }
 

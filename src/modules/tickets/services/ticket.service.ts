@@ -119,7 +119,6 @@ export class TicketsService {
     }
 
     async deleteFile(path: string): Promise<void> {
-        console.log(path)
         if (path) unlinkSync(path);
     }
 

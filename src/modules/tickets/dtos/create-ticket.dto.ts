@@ -24,7 +24,6 @@ export class CreateTicketDto {
         enum: TicketPriorityEnum,
         description: '0=low, 1=intermeddiate, 2=high'
     })
-    @Transform(({ value }) => parseInt(value))
     @IsEnum(TicketPriorityEnum)
     priority: TicketPriorityEnum;
 
@@ -32,15 +31,15 @@ export class CreateTicketDto {
         example: '66b892d965b885a03983e2d0',
         description: 'id of the related group'
     })
-    @IsString()
-    groupId: string;
+    @IsMongoId()
+    groupId: ObjectId;
 
     @ApiProperty({
         example: '66b892d965b885a03983e2d0',
         description: 'id of the related provider'
     })
-    @IsString()
-    providerId: string;
+    @IsMongoId()
+    providerId: ObjectId;
 
     @ApiPropertyOptional(
         {
@@ -51,10 +50,9 @@ export class CreateTicketDto {
     )
     @IsOptional()
     @IsInt()
-    @Transform(({ value }) => parseInt(value))
     workspaceId?: number;
 
     @ApiPropertyOptional({ type: 'string', format: 'binary' })
-    attachment: any;
+    attachment?: any;
 
 }

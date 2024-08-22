@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import AppConfig from '../configs/app.config';
 import { GroupsModule } from './modules/groups/group.module';
@@ -12,7 +12,6 @@ import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { HttpExceptionFilter } from './modules/shares/http-exception.filter';
 import helmet from 'helmet';
-import { ValidateTicketBodyMiddleware } from './modules/tickets/validateTicketBody.middleware';
 
 @Module({
   imports: [
@@ -66,7 +65,7 @@ import { ValidateTicketBodyMiddleware } from './modules/tickets/validateTicketBo
       provide: APP_PIPE,
       useValue: new ValidationPipe({
         whitelist: true,
-        transform: true
+        transform: true,
       })
     },
     {
@@ -79,6 +78,5 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ProtectionMiddleware).forRoutes('*');
     consumer.apply(helmet()).forRoutes('*');
-    consumer.apply(ValidateTicketBodyMiddleware).forRoutes('/tickets/create');
   }
 }

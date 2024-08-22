@@ -9,6 +9,7 @@ import { HttpStatusCode } from "axios";
 import { IsAdminGuard } from "../shares/isAdmin.guard";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { CommentResponse } from "./swaggerRespnses/comment-response";
+import { ValidateCommentBodyInterceptor } from "./validateCommentBody.interceptor";
 
 
 @ApiTags('Comments')
@@ -33,11 +34,11 @@ export class CommentsController {
         storage,
         limits: { fileSize: 1024 * 1024 * 1 },
         fileFilter
-    }))
+    }), ValidateCommentBodyInterceptor)
     create(
         @UploadedFile() file: Express.Multer.File,
         @Req() req: Request,
-        @Body() createCommentDto: CreateCommentDto & { attachment?: string }
+        @Body() createCommentDto: CreateCommentDto 
     ) {
         if (!file) req.body.attachment = undefined;
         else req.body.attachment = file.path;
@@ -90,7 +91,7 @@ export class CommentsController {
     @ApiUnauthorizedResponse({ description: 'not logged in' })
     @ApiForbiddenResponse({ description: 'neither creator of the comment nor a ticketing admin' })
     @ApiBadRequestResponse({ description: 'no attachment available for this comment' })
-    @ApiOkResponse({description: 'attachment downloaded successfully'})
+    @ApiOkResponse({ description: 'attachment downloaded successfully' })
     @Get('/download/:id')
     async download(@Res() res: Response, @Param('id') id: ObjectId) {
         const fileBuffer = await this.commentsService.download(id);

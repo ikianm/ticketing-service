@@ -20,16 +20,10 @@ export class CommentsService {
         private readonly ticketsApiService: TicketsApiService
     ) { }
 
-    async create(createCommentDto: CreateCommentDto & { attachment?: string }): Promise<ResponseMessageDto<Comment>> {
+    async create(createCommentDto: CreateCommentDto): Promise<ResponseMessageDto<Comment>> {
         const { content, attachment, ticketId } = createCommentDto;
 
-        const isValidObjectId = mongoose.Types.ObjectId.isValid(ticketId);
-        if (!isValidObjectId) {
-            await this.deleteFile(attachment);
-            throw new BadRequestException('شناسه کامنت نامعتبر است');
-        }
-
-        const ticket = await this.ticketsApiService.findById(new mongoose.Types.ObjectId(ticketId));
+        const ticket = await this.ticketsApiService.findById(ticketId);
         if (!ticket) {
             await this.deleteFile(attachment);
             throw new NotFoundException('تیکت یافت نشد');
