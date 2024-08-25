@@ -31,25 +31,23 @@ import helmet from 'helmet';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const environment = configService.get<string>('environment');
-        let level = '';
-        let target = 'pino-pretty';
         if (environment === 'production') {
-          level = 'error';
-          target = '';
-        } else if (environment === 'testing') {
-          level = 'warn'
+          return {
+            pinoHttp: {
+              level: 'error'
+            }
+          }
         } else {
-          level = 'warn';
-        }
-
-        return {
-          pinoHttp: {
-            level,
-            transport: {
-              target
+          return {
+            pinoHttp: {
+              level: 'warn',
+              transport: {
+                target: 'pino-pretty'
+              }
             }
           }
         }
+
       },
       inject: [ConfigService]
     }),

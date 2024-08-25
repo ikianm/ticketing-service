@@ -1,0 +1,27 @@
+services:
+  mongodb:
+    image: mongo:6.0.5-jammy
+    ports:
+      - "27017:27017"
+    networks:
+      - private-network
+    volumes:
+      - mongo-persist:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+  ticketing-service:
+    image: ticketing-service:1.0
+    depends_on:
+      - mongodb
+    ports: 
+      - "3000:3000"
+    networks:
+      - private-network
+    
+networks: 
+  private-network: {}
+
+volumes:
+  mongo-persist: {}
