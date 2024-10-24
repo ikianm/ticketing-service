@@ -30,8 +30,7 @@ A simple ticketing service, provides routes for creating tickets and comments
 - Install Docker
 - Open terminal in project's directory
 - Create a `.env.production` file in the root directory and add environment variables listed in `.env.example` file
-- Run `sudo docker build -t  ticketing-service:1.0` to create an image
-- Run `sudo docker-compose up` to get ticketing and mongodb container up and running
+- Run `./init.sh`
 
 # License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
